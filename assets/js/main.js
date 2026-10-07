@@ -182,11 +182,48 @@
 
   document.querySelectorAll("[data-static-form]").forEach((form) => {
     form.addEventListener("submit", (event) => {
-      if (form.getAttribute("action") === "#") {
-        event.preventDefault();
-        const note = form.querySelector("[data-form-note]");
-        if (note) note.textContent = "The form is ready for endpoint connection. For immediate help, email sales@patrickstoneventures.com.ng.";
-      }
+      event.preventDefault();
+
+      if (!form.reportValidity()) return;
+
+      const fieldLabels = {
+        name: "Full name",
+        company: "Company",
+        email: "Email",
+        phone: "Phone / WhatsApp",
+        country: "Country",
+        enquiry_type: "Enquiry type",
+        product: "Product / service",
+        quantity: "Estimated quantity",
+        delivery_location: "Delivery location",
+        message: "Message"
+      };
+      const formData = new FormData(form);
+      const details = [];
+
+      formData.forEach((value, key) => {
+        const cleanValue = String(value).trim();
+        if (cleanValue) details.push(`${fieldLabels[key] || key}: ${cleanValue}`);
+      });
+
+      const requestType = form.classList.contains("contact-form") ? "website enquiry" : "quote request";
+      const message = [
+        "Hello Patrick Stone Ventures,",
+        "",
+        `I would like to submit a ${requestType}.`,
+        "",
+        ...details,
+        "",
+        `Submitted from: ${window.location.href}`
+      ].join("\n");
+      const whatsappUrl = `https://wa.me/2348167525393?text=${encodeURIComponent(message)}`;
+      const note = form.querySelector("[data-form-note]");
+
+      if (note) note.textContent = "Opening WhatsApp with your request. Review the message, then tap Send.";
+
+      const whatsappWindow = window.open(whatsappUrl, "_blank");
+      if (whatsappWindow) whatsappWindow.opener = null;
+      else window.location.href = whatsappUrl;
     });
   });
 })();

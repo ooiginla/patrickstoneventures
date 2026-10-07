@@ -23,7 +23,7 @@ node tools/build-pages.mjs
 
 ## Form connection
 
-Forms currently use `action="#"` and show a non-submitting integration notice. Before launch, replace the action with a Formspree, Web3Forms or custom form endpoint and remove or adjust the static-form interception in `assets/js/main.js`.
+Quote and contact forms create a pre-filled WhatsApp message for `+234 816 752 5393`. The visitor reviews the generated message in WhatsApp and taps Send. The integration is handled in `assets/js/main.js` and does not require a server-side form endpoint.
 
 ## Deployment
 
